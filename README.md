@@ -4,6 +4,8 @@ Web quản lý đặt thuê váy cho Aura Rental (nhiều cơ sở): trang khác
 
 Next.js 16 (App Router) · Supabase (Postgres, Auth, Storage, pg_cron) · Tailwind CSS v4
 
+> Mới nhận dự án, chưa quen lập trình? Đọc [docs/HUONG-DAN-BAN-GIAO.md](docs/HUONG-DAN-BAN-GIAO.md): cài đặt từng bước, cách nhờ Claude Code sửa tiếp, đưa web lên mạng, lỗi hay gặp.
+
 ## Chạy local
 
 Cần Node 22+, pnpm, Docker Desktop đang chạy.
