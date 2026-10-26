@@ -1,11 +1,12 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { getStaff } from "@/lib/auth";
 import { dbErrorMessage, fail, ok, type ActionResult } from "@/lib/action-result";
 import { isValidPhone, normalizePhone, slugify } from "@/lib/format";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { CATALOG_TAG } from "@/lib/queries/storefront";
 import { createClient } from "@/lib/supabase/server";
 
 async function ownerOnly() {
@@ -40,6 +41,7 @@ export async function updateSettings(input: z.input<typeof settingsSchema>): Pro
   const supabase = await createClient();
   const { error } = await supabase.from("settings").update(parsed.data).eq("id", true);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -66,6 +68,7 @@ export async function updateBranch(branchId: string, input: z.input<typeof branc
   const supabase = await createClient();
   const { error } = await supabase.from("branches").update(parsed.data).eq("id", branchId);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -88,6 +91,7 @@ export async function createBranch(input: z.input<typeof newBranchSchema>): Prom
   const supabase = await createClient();
   const { error } = await supabase.from("branches").insert(parsed.data);
   if (error) return fail(error.code === "23505" ? `Mã ${parsed.data.code} đã có cơ sở dùng` : dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -97,6 +101,7 @@ export async function setBranchActive(branchId: string, active: boolean): Promis
   const supabase = await createClient();
   const { error } = await supabase.from("branches").update({ is_active: active }).eq("id", branchId);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -115,6 +120,7 @@ export async function saveCategory(categoryId: string | null, name: string): Pro
     ? await supabase.from("categories").update({ name: trimmed, slug: slugify(trimmed) }).eq("id", categoryId)
     : await supabase.from("categories").insert({ name: trimmed, slug: slugify(trimmed), sort_order: 99 });
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -124,6 +130,7 @@ export async function deleteCategory(categoryId: string): Promise<ActionResult> 
   const supabase = await createClient();
   const { error } = await supabase.from("categories").delete().eq("id", categoryId);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }

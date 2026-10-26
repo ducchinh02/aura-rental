@@ -343,14 +343,14 @@ isOneToOne: false
                   ]
                 },"products": {
                   Row: {
-                    "base_price": number,"category_id": string | null,"color": string | null,"created_at": string,"deposit_amount": number,"description": string | null,"extra_day_price": number,"extra_hour_price": number,"hourly_hours": number,"hourly_price": number | null,"id": string,"name": string,"occasions": (string)[],"rental_days": number,"security_amount": number,"slug": string,"status": Database["public"]['Enums']["product_status"],"updated_at": string
+                    "base_price": number,"category_id": string | null,"color": string | null,"created_at": string,"deposit_amount": number,"description": string | null,"extra_day_price": number,"extra_hour_price": number,"hourly_hours": number,"hourly_price": number | null,"id": string,"name": string,"occasions": (string)[],"rental_days": number,"requires_deposit": boolean,"security_amount": number,"slug": string,"status": Database["public"]['Enums']["product_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "base_price": number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name": string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug": string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
+                    "base_price": number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name": string,"occasions"?: (string)[],"rental_days"?: number,"requires_deposit"?: boolean,"security_amount"?: number,"slug": string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
                   }
                   Update: {
-                    "base_price"?: number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name"?: string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug"?: string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
+                    "base_price"?: number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name"?: string,"occasions"?: (string)[],"rental_days"?: number,"requires_deposit"?: boolean,"security_amount"?: number,"slug"?: string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -581,6 +581,11 @@ isOneToOne: false
 "get_fitting_slots":
 { Args: { "p_branch_id": string,"p_date": string }; Returns: {
               "remaining": number,"starts_at": string
+            }[]
+                           },
+"get_hourly_slots":
+{ Args: { "p_branch_id": string,"p_date": string,"p_product_id": string,"p_size": string }; Returns: {
+              "max_end_at": string,"start_at": string
             }[]
                            },
 "get_unavailable_dates":

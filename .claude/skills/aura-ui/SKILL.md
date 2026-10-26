@@ -75,6 +75,14 @@ Chỉ tự dựng bằng `div` khi shadcn không có thứ tương đương (ví
 - Trang danh sách: `Tabs` trạng thái → ô tìm + bộ lọc + `ToggleGroup` kiểu xem → `DataTable` hoặc lịch.
 - Điện thoại: sidebar tự thành `Sheet`; bảng cuộn ngang trong card; card xếp một cột.
 
+## Trang khách (`src/app/(shop)`)
+
+- Cùng token, chữ và component với trang quản trị; khung riêng: header trắng dính trên (logo + "Váy cho thuê", "Tra cứu đơn"), nội dung `max-w-6xl px-4`, footer liệt kê cơ sở. Mảng thương hiệu dùng `bg-brand-soft` (hero, nền ảnh váy).
+- Trang váy: điện thoại xếp ảnh → form đặt → chi tiết; máy tính ảnh + chi tiết bên trái, form `30rem` bên phải.
+- Lịch trống luôn lấy trực tiếp (không cache) và nghe Realtime qua `useLiveAvailability`; hiện trạng thái kết nối (chấm xanh "Lịch trống cập nhật trực tiếp"). Ngày đã kín: disable + gạch ngang.
+- Lời với khách xưng "bạn", gọi shop là "shop"; lỗi nói việc cần làm tiếp ("Bạn chọn thời gian khác nhé").
+- Chuyển cọc dùng `DepositPayment` (VietQR tạo tại chỗ bằng `lib/vietqr.ts`, không dùng ảnh QR của dịch vụ ngoài).
+
 ## Hình váy
 
 Váy là nội dung chính của shop, nên mọi nơi nhắc tới váy đều kèm `DressThumb` (ảnh bìa, chưa có ảnh thì vẽ phác theo màu vải). Kích thước: trong bảng `w-8`, trong dòng card `w-10`, lưới catalogue `w-full`.

@@ -137,7 +137,10 @@ export default async function BookingPage({ params }: PageProps<"/admin/don/[cod
     ? lateCount * b.booking_items.reduce((sum, bi) => sum + (bi.is_active ? bi.inventory_items.products.extra_hour_price : 0), 0)
     : lateCount * (settings?.late_fee_per_day ?? 0);
 
-  const next = nextBookingStatus[b.status];
+  // Đơn chờ chỉ gồm váy không cần cọc: shop gọi khách rồi xác nhận, không có hạn giữ chỗ
+  const noDeposit = b.status === "pending" && b.deposit_required === 0;
+  const nextRule = nextBookingStatus[b.status];
+  const next = nextRule && noDeposit ? { ...nextRule, action: "Xác nhận đơn" } : nextRule;
   const pendingTransfers = b.transfers.filter(
     (t) => t.to_branch_id === b.branch_id && (t.status === "pending" || t.status === "in_transit"),
   );
@@ -179,7 +182,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/don/[cod
         title={
           <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
             Đơn <span className="font-mono tracking-normal">{b.code}</span>
-            <BookingStatusBadge status={b.status} />
+            <BookingStatusBadge status={b.status} noDeposit={b.deposit_required === 0} />
             <PaymentBadge total={total} balance={balance} status={b.status} />
             {b.rental_unit === "hour" && <StatusBadge tone="brand">Thuê theo giờ</StatusBadge>}
           </span>
@@ -199,8 +202,15 @@ export default async function BookingPage({ params }: PageProps<"/admin/don/[cod
         }
       />
 
-      {(b.status === "pending" && b.hold_expires_at) || lateCount > 0 || customer.is_blacklisted || b.cancel_reason ? (
+      {(b.status === "pending" && b.hold_expires_at) || noDeposit || lateCount > 0 || customer.is_blacklisted || b.cancel_reason ? (
         <div className="flex flex-col gap-3">
+          {noDeposit && (
+            <Alert>
+              <Clock />
+              <AlertTitle>Đơn không cần cọc, chờ shop xác nhận</AlertTitle>
+              <AlertDescription>Gọi hoặc nhắn khách xác nhận rồi bấm &ldquo;Xác nhận đơn&rdquo;. Đơn giữ váy và không tự hủy.</AlertDescription>
+            </Alert>
+          )}
           {b.status === "pending" && b.hold_expires_at && (
             <Alert>
               <Clock />
@@ -345,7 +355,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/don/[cod
                   </Row>
                 </dl>
                 <dl>
-                  <Row label="Cọc giữ chỗ cần thu">{formatMoney(b.deposit_required)}</Row>
+                  <Row label="Cọc giữ chỗ cần thu">{b.deposit_required > 0 ? formatMoney(b.deposit_required) : "Không cần cọc"}</Row>
                   <Row label="Thế chấp khi nhận váy">{formatMoney(b.security_deposit)}</Row>
                   <Row label="Shop đang giữ thế chấp">{formatMoney(securityHeld)}</Row>
                 </dl>

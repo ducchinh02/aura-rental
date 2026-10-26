@@ -89,6 +89,7 @@ export default async function BookingsPage({ searchParams }: PageProps<"/admin/d
               rows={(rows ?? []).map((r) => ({
                 code: r.code,
                 status: r.status,
+                noDeposit: r.deposit_required === 0,
                 customerName: r.customers.full_name,
                 phone: r.customers.phone,
                 dresses: r.booking_items.map((bi) => toDress(bi.inventory_items)),

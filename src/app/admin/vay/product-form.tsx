@@ -40,6 +40,7 @@ export function ProductForm({ categories, product, canEditPrice }: Props) {
       rental_days: 3,
       extra_day_price: 0,
       deposit_amount: 0,
+      requires_deposit: true,
       security_amount: 0,
       hourly_price: null,
       hourly_hours: 3,
@@ -181,15 +182,40 @@ export function ProductForm({ categories, product, canEditPrice }: Props) {
                 disabled={priceLocked}
               />
             </Field>
-            <Field label="Cọc giữ chỗ" htmlFor="deposit_amount">
-              <MoneyInput
-                id="deposit_amount"
-                value={values.deposit_amount}
-                onValueChange={(v) => set("deposit_amount", v)}
+          </div>
+        </FormSection>
+
+        <FormSection
+          title="Cọc giữ chỗ"
+          description={
+            values.requires_deposit
+              ? "Khách chuyển cọc trong thời gian giữ chỗ để giữ váy. Quá hạn chưa cọc, đơn tự huỷ."
+              : "Khách đặt xong không phải chuyển cọc. Đơn chờ shop gọi xác nhận, không tự huỷ."
+          }
+          aside={
+            <label className="flex items-center gap-2 text-sm">
+              <Switch
+                checked={values.requires_deposit}
                 disabled={priceLocked}
+                onCheckedChange={(on) => set("requires_deposit", on)}
+                aria-label="Cần cọc giữ chỗ"
               />
-            </Field>
-            <Field label="Thế chấp khi nhận váy" htmlFor="security_amount">
+              {values.requires_deposit ? "Cần cọc" : "Không cần cọc"}
+            </label>
+          }
+        >
+          <div className="grid gap-4 sm:grid-cols-3">
+            {values.requires_deposit && (
+              <Field label="Tiền cọc" htmlFor="deposit_amount" hint="Trừ vào tiền thuê khi khách nhận váy.">
+                <MoneyInput
+                  id="deposit_amount"
+                  value={values.deposit_amount}
+                  onValueChange={(v) => set("deposit_amount", v)}
+                  disabled={priceLocked}
+                />
+              </Field>
+            )}
+            <Field label="Thế chấp khi nhận váy" htmlFor="security_amount" hint="Hoàn lại khi khách trả váy.">
               <MoneyInput
                 id="security_amount"
                 value={values.security_amount}

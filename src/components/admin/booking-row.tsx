@@ -40,7 +40,7 @@ export const productThumbSelect = "products(id, name, color, categories(name), p
 
 // Kiểu dữ liệu chung khi select đơn kèm khách + váy
 export const bookingSummarySelect =
-  "id, code, status, rental_unit, pickup_date, return_date, pickup_at, return_at, delivery_method, total, branch_id, customers!inner(full_name, phone), booking_items(inventory_items(code, size, products(id, name, color, categories(name), product_images(storage_path, is_cover))))" as const;
+  "id, code, status, rental_unit, pickup_date, return_date, pickup_at, return_at, delivery_method, total, deposit_required, branch_id, customers!inner(full_name, phone), booking_items(inventory_items(code, size, products(id, name, color, categories(name), product_images(storage_path, is_cover))))" as const;
 
 type DressRow = {
   code?: string;

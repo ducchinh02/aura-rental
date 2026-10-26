@@ -14,8 +14,18 @@ export function StatusBadge({ tone, children, className }: { tone: Tone; childre
   );
 }
 
-export function BookingStatusBadge({ status }: { status: BookingStatus }) {
-  return <StatusBadge tone={bookingStatusTone[status]}>{bookingStatusLabel[status]}</StatusBadge>;
+// Đơn không cần cọc (deposit_required = 0) không nói "cọc" với khách / nhân viên
+const noDepositLabel: Partial<Record<BookingStatus, string>> = {
+  pending: "Chờ xác nhận",
+  confirmed: "Đã xác nhận",
+};
+
+export function BookingStatusBadge({ status, noDeposit }: { status: BookingStatus; noDeposit?: boolean }) {
+  return (
+    <StatusBadge tone={bookingStatusTone[status]}>
+      {(noDeposit && noDepositLabel[status]) || bookingStatusLabel[status]}
+    </StatusBadge>
+  );
 }
 
 /** Tình trạng tiền của đơn: đã thu đủ / còn thiếu / chưa thu */

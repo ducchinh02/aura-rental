@@ -1,11 +1,12 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { canManageBranch, getStaff } from "@/lib/auth";
 import { dbErrorMessage, fail, ok, type ActionResult } from "@/lib/action-result";
 import { slugify } from "@/lib/format";
 import { PRODUCT_IMAGES_BUCKET } from "@/lib/storage";
+import { CATALOG_TAG } from "@/lib/queries/storefront";
 import { createClient } from "@/lib/supabase/server";
 
 const id = z.string().regex(/^[0-9a-f-]{36}$/i, "Mã không hợp lệ");
@@ -33,6 +34,7 @@ const productSchema = z.object({
   rental_days: z.number().int().min(1, "Số ngày của gói tối thiểu là 1"),
   extra_day_price: money,
   deposit_amount: money,
+  requires_deposit: z.boolean(),
   security_amount: money,
   hourly_price: money.nullable(),
   hourly_hours: z.number().int().min(1, "Gói giờ tối thiểu 1 giờ").max(24, "Gói giờ tối đa 24 giờ"),
@@ -53,6 +55,7 @@ export async function createProduct(input: ProductInput): Promise<ActionResult<{
   const supabase = await createClient();
   const { data, error } = await supabase.from("products").insert(parsed.data).select("id").single();
   if (error || !data) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   return ok({ id: data.id });
 }
 
@@ -67,6 +70,7 @@ export async function updateProduct(productId: string, input: ProductInput): Pro
     rental_days,
     extra_day_price,
     deposit_amount,
+    requires_deposit,
     security_amount,
     hourly_price,
     hourly_hours,
@@ -81,6 +85,7 @@ export async function updateProduct(productId: string, input: ProductInput): Pro
           rental_days,
           extra_day_price,
           deposit_amount,
+          requires_deposit,
           security_amount,
           hourly_price,
           hourly_hours,
@@ -91,6 +96,7 @@ export async function updateProduct(productId: string, input: ProductInput): Pro
   const supabase = await createClient();
   const { error } = await supabase.from("products").update(values).eq("id", productId);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -113,6 +119,7 @@ export async function setBranchPrice(productId: string, branchId: string, input:
     ? await supabase.from("product_branch_prices").delete().eq("product_id", productId).eq("branch_id", branchId)
     : await supabase.from("product_branch_prices").upsert({ product_id: productId, branch_id: branchId, ...input });
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -140,6 +147,7 @@ export async function addProductImage(productId: string, storagePath: string): P
     is_cover: !hasCover,
   });
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -153,6 +161,7 @@ export async function setCoverImage(imageId: string): Promise<ActionResult> {
   await supabase.from("product_images").update({ is_cover: false }).eq("product_id", image.product_id);
   const { error } = await supabase.from("product_images").update({ is_cover: true }).eq("id", imageId);
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -179,6 +188,7 @@ export async function moveImage(imageId: string, direction: -1 | 1): Promise<Act
   );
   const failed = results.find((r) => r.error);
   if (failed?.error) return fail(dbErrorMessage(failed.error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -208,6 +218,7 @@ export async function deleteImage(imageId: string): Promise<ActionResult> {
       .maybeSingle();
     if (first) await supabase.from("product_images").update({ is_cover: true }).eq("id", first.id);
   }
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -239,6 +250,7 @@ export async function addItem(productId: string, input: z.input<typeof itemSchem
   const supabase = await createClient();
   const { error } = await supabase.from("inventory_items").insert({ product_id: productId, ...parsed.data });
   if (error) return fail(dbErrorMessage(error));
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }
@@ -262,6 +274,7 @@ export async function updateItem(itemId: string, input: z.input<typeof itemUpdat
   const { data, error } = await supabase.from("inventory_items").update(parsed.data).eq("id", itemId).select("id");
   if (error) return fail(dbErrorMessage(error));
   if (!data?.length) return fail("Chỉ cơ sở giữ váy (kho gốc) mới sửa được chiếc này");
+  revalidateTag(CATALOG_TAG, "max");
   refresh();
   return ok();
 }

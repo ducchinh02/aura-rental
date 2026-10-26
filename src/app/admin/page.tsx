@@ -237,9 +237,9 @@ export default async function TodayPage() {
           badge={overdue > 0 && <StatusBadge tone="red">{overdue} quá hạn</StatusBadge>}
         />
         <StatCard
-          title="Chờ cọc"
+          title="Chờ cọc, xác nhận"
           value={pendingRes.count ?? 0}
-          caption="đơn đang giữ chỗ"
+          caption="đơn đang giữ váy chờ xử lý"
           icon={Clock}
           tone="amber"
           badge={!!pendingRes.count && <StatusBadge tone="amber">Cần xử lý</StatusBadge>}

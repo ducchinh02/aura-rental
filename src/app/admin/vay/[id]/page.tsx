@@ -139,6 +139,7 @@ export default async function ProductPage({ params }: PageProps<"/admin/vay/[id]
               product.color,
               `${formatMoney(product.base_price)} / ${product.rental_days} ngày`,
               product.hourly_price !== null && `${formatMoney(product.hourly_price)} / ${product.hourly_hours} giờ`,
+              !product.requires_deposit && "không cần cọc",
             ]
               .filter(Boolean)
               .join(", ")}
@@ -283,6 +284,7 @@ export default async function ProductPage({ params }: PageProps<"/admin/vay/[id]
               rental_days: product.rental_days,
               extra_day_price: product.extra_day_price,
               deposit_amount: product.deposit_amount,
+              requires_deposit: product.requires_deposit,
               security_amount: product.security_amount,
               hourly_price: product.hourly_price,
               hourly_hours: product.hourly_hours,

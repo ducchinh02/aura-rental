@@ -25,6 +25,8 @@ import type { BookingStatus } from "@/lib/labels";
 export type BookingRow = {
   code: string;
   status: BookingStatus;
+  /** Đơn chờ không cần cọc */
+  noDeposit: boolean;
   customerName: string;
   phone: string;
   dresses: Dress[];
@@ -100,7 +102,7 @@ function columns(showBranch: boolean): ColumnDef<BookingRow>[] {
     {
       accessorKey: "status",
       header: "Trạng thái",
-      cell: ({ row }) => <BookingStatusBadge status={row.original.status} />,
+      cell: ({ row }) => <BookingStatusBadge status={row.original.status} noDeposit={row.original.noDeposit} />,
     },
     {
       id: "payment",

@@ -1,0 +1,32 @@
+-- Váy thật của shop: CHƯA CÓ DỮ LIỆU.
+-- Tên, giá, size nằm trong chú thích bài đăng Instagram, phải đăng nhập mới xem được.
+-- Điền mỗi mẫu một dòng ở `dresses`, mỗi chiếc váy một dòng ở `items` (mã chiếc + kho gốc), rồi bỏ comment.
+-- Ảnh váy tải lên ở trang quản trị (Kho váy → mẫu váy → Ảnh).
+--
+-- with dresses (slug, name, category, color, occasions, description,
+--               base_price, rental_days, extra_day_price, deposit_amount, requires_deposit, security_amount,
+--               hourly_price, hourly_hours, extra_hour_price) as (values
+--   ('ten-mau-vay', 'Tên mẫu váy', 'vay-thiet-ke', 'Trắng', '{"tiệc cưới", "chụp ảnh"}'::text[], 'Mô tả ngắn',
+--     450000, 3, 100000, 200000, true, 1000000,
+--     null::bigint, 3, 0)
+-- ),
+-- new_products as (
+--   insert into public.products (
+--     category_id, slug, name, color, occasions, description, base_price, rental_days, extra_day_price,
+--     deposit_amount, requires_deposit, security_amount, hourly_price, hourly_hours, extra_hour_price, status
+--   )
+--   select c.id, d.slug, d.name, d.color, d.occasions, d.description, d.base_price, d.rental_days, d.extra_day_price,
+--     d.deposit_amount, d.requires_deposit, d.security_amount, d.hourly_price, d.hourly_hours, d.extra_hour_price, 'active'
+--   from dresses d
+--   left join public.categories c on c.slug = d.category
+--   returning id, slug
+-- ),
+-- items (slug, size, code, branch_code) as (values
+--   ('ten-mau-vay', 'S', 'TMV-S-HN', 'HN'),
+--   ('ten-mau-vay', 'M', 'TMV-M-SG', 'SG')
+-- )
+-- insert into public.inventory_items (product_id, size, code, home_branch_id)
+-- select p.id, i.size, i.code, b.id
+-- from items i
+-- join new_products p on p.slug = i.slug
+-- join public.branches b on b.code = i.branch_code;

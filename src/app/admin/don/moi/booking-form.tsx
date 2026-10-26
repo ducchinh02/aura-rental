@@ -507,11 +507,13 @@ export function BookingForm({ branches, products, defaults }: Props) {
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Cọc giữ chỗ</dt>
-              <dd>{formatMoney(summary.deposit)}</dd>
+              <dd>{summary.subtotal > 0 && summary.deposit === 0 ? "Không cần cọc" : formatMoney(summary.deposit)}</dd>
             </div>
           </dl>
           <p className="text-xs text-muted-foreground">
-            Đơn mới ở trạng thái chờ cọc và giữ váy trong thời gian giữ chỗ đã cài đặt.
+            {summary.subtotal > 0 && summary.deposit === 0
+              ? "Váy trong đơn không cần cọc: đơn giữ váy, chờ shop xác nhận và không tự huỷ."
+              : "Đơn mới ở trạng thái chờ cọc và giữ váy trong thời gian giữ chỗ đã cài đặt."}
           </p>
           <Button type="submit" size="lg" disabled={submitting}>
             {submitting && <Spinner />}
