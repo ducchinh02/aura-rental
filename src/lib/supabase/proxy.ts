@@ -30,11 +30,20 @@ export async function updateSession(request: NextRequest) {
   // Không chèn code giữa createServerClient và getClaims: getClaims làm mới token hết hạn
   const { data } = await supabase.auth.getClaims();
 
-  if (!data?.claims && request.nextUrl.pathname.startsWith("/admin")) {
+  const { pathname } = request.nextUrl;
+
+  if (!data?.claims && pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
-    url.searchParams.set("next", request.nextUrl.pathname);
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (data?.claims && pathname === "/login" && !request.nextUrl.searchParams.has("error")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

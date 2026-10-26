@@ -57,14 +57,14 @@ isOneToOne: false
                   ]
                 },"booking_items": {
                   Row: {
-                    "blocked_period": unknown,"booking_id": string,"created_at": string,"id": string,"is_active": boolean,"is_price_custom": boolean,"item_id": string,"price": number
+                    "blocked_period": unknown,"blocked_range": unknown,"booking_id": string,"created_at": string,"id": string,"is_active": boolean,"is_price_custom": boolean,"item_id": string,"price": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "blocked_period": unknown,"booking_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_price_custom"?: boolean,"item_id": string,"price": number
+                    "blocked_period": unknown,"blocked_range": unknown,"booking_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_price_custom"?: boolean,"item_id": string,"price": number
                   }
                   Update: {
-                    "blocked_period"?: unknown,"booking_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_price_custom"?: boolean,"item_id"?: string,"price"?: number
+                    "blocked_period"?: unknown,"blocked_range"?: unknown,"booking_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_price_custom"?: boolean,"item_id"?: string,"price"?: number
                   }
                   Relationships: [
                     {
@@ -95,14 +95,14 @@ isOneToOne: false
                   ]
                 },"bookings": {
                   Row: {
-                    "branch_id": string,"cancel_reason": string | null,"cancelled_at": string | null,"code": string,"completed_at": string | null,"created_at": string,"created_by": string | null,"customer_id": string,"customer_note": string | null,"damage_fee": number,"delivery_method": Database["public"]['Enums']["delivery_method"],"deposit_required": number,"discount": number,"hold_expires_at": string | null,"id": string,"internal_note": string | null,"late_fee": number,"picked_up_at": string | null,"pickup_date": string,"return_date": string,"returned_at": string | null,"security_deposit": number,"ship_zone": Database["public"]['Enums']["ship_zone"] | null,"shipping_address": string | null,"shipping_fee": number,"source": Database["public"]['Enums']["booking_source"],"status": Database["public"]['Enums']["booking_status"],"subtotal": number,"total": number | null,"updated_at": string
+                    "branch_id": string,"cancel_reason": string | null,"cancelled_at": string | null,"code": string,"completed_at": string | null,"created_at": string,"created_by": string | null,"customer_id": string,"customer_note": string | null,"damage_fee": number,"delivery_method": Database["public"]['Enums']["delivery_method"],"deposit_required": number,"discount": number,"hold_expires_at": string | null,"id": string,"internal_note": string | null,"late_fee": number,"picked_up_at": string | null,"pickup_at": string | null,"pickup_date": string,"rental_unit": Database["public"]['Enums']["rental_unit"],"return_at": string | null,"return_date": string,"returned_at": string | null,"security_deposit": number,"ship_zone": Database["public"]['Enums']["ship_zone"] | null,"shipping_address": string | null,"shipping_fee": number,"source": Database["public"]['Enums']["booking_source"],"status": Database["public"]['Enums']["booking_status"],"subtotal": number,"total": number | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"code": string,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"customer_id": string,"customer_note"?: string | null,"damage_fee"?: number,"delivery_method"?: Database["public"]['Enums']["delivery_method"],"deposit_required"?: number,"discount"?: number,"hold_expires_at"?: string | null,"id"?: string,"internal_note"?: string | null,"late_fee"?: number,"picked_up_at"?: string | null,"pickup_date": string,"return_date": string,"returned_at"?: string | null,"security_deposit"?: number,"ship_zone"?: Database["public"]['Enums']["ship_zone"] | null,"shipping_address"?: string | null,"shipping_fee"?: number,"source"?: Database["public"]['Enums']["booking_source"],"status"?: Database["public"]['Enums']["booking_status"],"subtotal"?: number,"total"?: never,"updated_at"?: string
+                    "branch_id": string,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"code": string,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"customer_id": string,"customer_note"?: string | null,"damage_fee"?: number,"delivery_method"?: Database["public"]['Enums']["delivery_method"],"deposit_required"?: number,"discount"?: number,"hold_expires_at"?: string | null,"id"?: string,"internal_note"?: string | null,"late_fee"?: number,"picked_up_at"?: string | null,"pickup_at"?: string | null,"pickup_date": string,"rental_unit"?: Database["public"]['Enums']["rental_unit"],"return_at"?: string | null,"return_date": string,"returned_at"?: string | null,"security_deposit"?: number,"ship_zone"?: Database["public"]['Enums']["ship_zone"] | null,"shipping_address"?: string | null,"shipping_fee"?: number,"source"?: Database["public"]['Enums']["booking_source"],"status"?: Database["public"]['Enums']["booking_status"],"subtotal"?: number,"total"?: never,"updated_at"?: string
                   }
                   Update: {
-                    "branch_id"?: string,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"code"?: string,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"customer_id"?: string,"customer_note"?: string | null,"damage_fee"?: number,"delivery_method"?: Database["public"]['Enums']["delivery_method"],"deposit_required"?: number,"discount"?: number,"hold_expires_at"?: string | null,"id"?: string,"internal_note"?: string | null,"late_fee"?: number,"picked_up_at"?: string | null,"pickup_date"?: string,"return_date"?: string,"returned_at"?: string | null,"security_deposit"?: number,"ship_zone"?: Database["public"]['Enums']["ship_zone"] | null,"shipping_address"?: string | null,"shipping_fee"?: number,"source"?: Database["public"]['Enums']["booking_source"],"status"?: Database["public"]['Enums']["booking_status"],"subtotal"?: number,"total"?: never,"updated_at"?: string
+                    "branch_id"?: string,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"code"?: string,"completed_at"?: string | null,"created_at"?: string,"created_by"?: string | null,"customer_id"?: string,"customer_note"?: string | null,"damage_fee"?: number,"delivery_method"?: Database["public"]['Enums']["delivery_method"],"deposit_required"?: number,"discount"?: number,"hold_expires_at"?: string | null,"id"?: string,"internal_note"?: string | null,"late_fee"?: number,"picked_up_at"?: string | null,"pickup_at"?: string | null,"pickup_date"?: string,"rental_unit"?: Database["public"]['Enums']["rental_unit"],"return_at"?: string | null,"return_date"?: string,"returned_at"?: string | null,"security_deposit"?: number,"ship_zone"?: Database["public"]['Enums']["ship_zone"] | null,"shipping_address"?: string | null,"shipping_fee"?: number,"source"?: Database["public"]['Enums']["booking_source"],"status"?: Database["public"]['Enums']["booking_status"],"subtotal"?: number,"total"?: never,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -297,14 +297,14 @@ isOneToOne: false
                   ]
                 },"product_branch_prices": {
                   Row: {
-                    "branch_id": string,"extra_day_price": number | null,"price": number,"product_id": string
+                    "branch_id": string,"extra_day_price": number | null,"extra_hour_price": number | null,"hourly_price": number | null,"price": number | null,"product_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"extra_day_price"?: number | null,"price": number,"product_id": string
+                    "branch_id": string,"extra_day_price"?: number | null,"extra_hour_price"?: number | null,"hourly_price"?: number | null,"price"?: number | null,"product_id": string
                   }
                   Update: {
-                    "branch_id"?: string,"extra_day_price"?: number | null,"price"?: number,"product_id"?: string
+                    "branch_id"?: string,"extra_day_price"?: number | null,"extra_hour_price"?: number | null,"hourly_price"?: number | null,"price"?: number | null,"product_id"?: string
                   }
                   Relationships: [
                     {
@@ -343,14 +343,14 @@ isOneToOne: false
                   ]
                 },"products": {
                   Row: {
-                    "base_price": number,"category_id": string | null,"color": string | null,"created_at": string,"deposit_amount": number,"description": string | null,"extra_day_price": number,"id": string,"name": string,"occasions": (string)[],"rental_days": number,"security_amount": number,"slug": string,"status": Database["public"]['Enums']["product_status"],"updated_at": string
+                    "base_price": number,"category_id": string | null,"color": string | null,"created_at": string,"deposit_amount": number,"description": string | null,"extra_day_price": number,"extra_hour_price": number,"hourly_hours": number,"hourly_price": number | null,"id": string,"name": string,"occasions": (string)[],"rental_days": number,"security_amount": number,"slug": string,"status": Database["public"]['Enums']["product_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "base_price": number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"id"?: string,"name": string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug": string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
+                    "base_price": number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name": string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug": string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
                   }
                   Update: {
-                    "base_price"?: number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"id"?: string,"name"?: string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug"?: string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
+                    "base_price"?: number,"category_id"?: string | null,"color"?: string | null,"created_at"?: string,"deposit_amount"?: number,"description"?: string | null,"extra_day_price"?: number,"extra_hour_price"?: number,"hourly_hours"?: number,"hourly_price"?: number | null,"id"?: string,"name"?: string,"occasions"?: (string)[],"rental_days"?: number,"security_amount"?: number,"slug"?: string,"status"?: Database["public"]['Enums']["product_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -363,14 +363,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "branch_id": string | null,"created_at": string,"full_name": string,"id": string,"is_active": boolean,"role": Database["public"]['Enums']["app_role"]
+                    "branch_id": string | null,"created_at": string,"full_name": string,"id": string,"is_active": boolean,"phone": string | null,"role": Database["public"]['Enums']["app_role"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id"?: string | null,"created_at"?: string,"full_name"?: string,"id": string,"is_active"?: boolean,"role"?: Database["public"]['Enums']["app_role"]
+                    "branch_id"?: string | null,"created_at"?: string,"full_name"?: string,"id": string,"is_active"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["app_role"]
                   }
                   Update: {
-                    "branch_id"?: string | null,"created_at"?: string,"full_name"?: string,"id"?: string,"is_active"?: boolean,"role"?: Database["public"]['Enums']["app_role"]
+                    "branch_id"?: string | null,"created_at"?: string,"full_name"?: string,"id"?: string,"is_active"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["app_role"]
                   }
                   Relationships: [
                     {
@@ -383,14 +383,14 @@ isOneToOne: false
                   ]
                 },"settings": {
                   Row: {
-                    "bank_account": string | null,"bank_bin": string | null,"bank_holder": string | null,"cleaning_days": number,"hold_hours": number,"id": boolean,"late_fee_per_day": number,"ship_days_local": number,"ship_days_province": number,"transfer_days": number,"updated_at": string
+                    "bank_account": string | null,"bank_bin": string | null,"bank_holder": string | null,"cleaning_days": number,"hold_hours": number,"hourly_buffer_minutes": number,"id": boolean,"late_fee_per_day": number,"ship_days_local": number,"ship_days_province": number,"transfer_days": number,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "bank_account"?: string | null,"bank_bin"?: string | null,"bank_holder"?: string | null,"cleaning_days"?: number,"hold_hours"?: number,"id"?: boolean,"late_fee_per_day"?: number,"ship_days_local"?: number,"ship_days_province"?: number,"transfer_days"?: number,"updated_at"?: string
+                    "bank_account"?: string | null,"bank_bin"?: string | null,"bank_holder"?: string | null,"cleaning_days"?: number,"hold_hours"?: number,"hourly_buffer_minutes"?: number,"id"?: boolean,"late_fee_per_day"?: number,"ship_days_local"?: number,"ship_days_province"?: number,"transfer_days"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "bank_account"?: string | null,"bank_bin"?: string | null,"bank_holder"?: string | null,"cleaning_days"?: number,"hold_hours"?: number,"id"?: boolean,"late_fee_per_day"?: number,"ship_days_local"?: number,"ship_days_province"?: number,"transfer_days"?: number,"updated_at"?: string
+                    "bank_account"?: string | null,"bank_bin"?: string | null,"bank_holder"?: string | null,"cleaning_days"?: number,"hold_hours"?: number,"hourly_buffer_minutes"?: number,"id"?: boolean,"late_fee_per_day"?: number,"ship_days_local"?: number,"ship_days_province"?: number,"transfer_days"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -497,8 +497,26 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "create_booking":
-{ Args: { "p_branch_id": string,"p_customer": Json,"p_customer_note"?: string,"p_delivery"?: Database["public"]['Enums']["delivery_method"],"p_items": Json,"p_pickup_date": string,"p_return_date": string,"p_ship_zone"?: Database["public"]['Enums']["ship_zone"],"p_shipping_address"?: string,"p_source"?: Database["public"]['Enums']["booking_source"] }; Returns: {
+            "add_booking_item":
+{ Args: { "p_booking_id": string,"p_product_id": string,"p_size": string }; Returns: {
+              "blocked_period": unknown,
+"blocked_range": unknown,
+"booking_id": string,
+"created_at": string,
+"id": string,
+"is_active": boolean,
+"is_price_custom": boolean,
+"item_id": string,
+"price": number
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "booking_items"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"create_booking":
+{ Args: { "p_branch_id": string,"p_customer": Json,"p_customer_note"?: string,"p_delivery"?: Database["public"]['Enums']["delivery_method"],"p_items": Json,"p_pickup_at"?: string,"p_pickup_date": string,"p_return_at"?: string,"p_return_date": string,"p_ship_zone"?: Database["public"]['Enums']["ship_zone"],"p_shipping_address"?: string,"p_source"?: Database["public"]['Enums']["booking_source"],"p_unit"?: Database["public"]['Enums']["rental_unit"] }; Returns: {
               "branch_id": string,
 "cancel_reason": string | null,
 "cancelled_at": string | null,
@@ -517,7 +535,10 @@ isOneToOne: false
 "internal_note": string | null,
 "late_fee": number,
 "picked_up_at": string | null,
+"pickup_at": string | null,
 "pickup_date": string,
+"rental_unit": Database["public"]['Enums']["rental_unit"],
+"return_at": string | null,
 "return_date": string,
 "returned_at": string | null,
 "security_deposit": number,
@@ -569,13 +590,19 @@ isOneToOne: false
 { Args: { "p_code": string,"p_phone": string }; Returns: Json
                            },
 "quote_rental":
-{ Args: { "p_branch_id": string,"p_delivery"?: Database["public"]['Enums']["delivery_method"],"p_pickup_date": string,"p_product_id": string,"p_return_date": string,"p_ship_zone"?: Database["public"]['Enums']["ship_zone"],"p_size": string }; Returns: {
-              "available": boolean,"deposit": number,"price": number,"rental_days": number
+{ Args: { "p_branch_id": string,"p_delivery"?: Database["public"]['Enums']["delivery_method"],"p_pickup_at"?: string,"p_pickup_date": string,"p_product_id": string,"p_return_at"?: string,"p_return_date": string,"p_ship_zone"?: Database["public"]['Enums']["ship_zone"],"p_size": string,"p_unit"?: Database["public"]['Enums']["rental_unit"] }; Returns: {
+              "available": boolean,"deposit": number,"hours": number,"price": number,"rental_days": number
             }[]
+                           },
+"remove_booking_item":
+{ Args: { "p_booking_item_id": string }; Returns: undefined
+                           },
+"revenue_report":
+{ Args: { "p_branch_id"?: string,"p_bucket"?: string,"p_from": string,"p_to": string }; Returns: Json
                            }
           }
           Enums: {
-            "app_role": "owner"|"staff","booking_source": "web"|"facebook"|"zalo"|"phone"|"walk_in","booking_status": "pending"|"confirmed"|"picked_up"|"returned"|"completed"|"cancelled","delivery_method": "pickup"|"ship","fitting_status": "booked"|"done"|"no_show"|"cancelled","item_status": "active"|"maintenance"|"retired","payment_kind": "payment"|"refund"|"security_hold"|"security_return","payment_method": "cash"|"bank"|"momo","product_status": "draft"|"active"|"archived","ship_zone": "local"|"province","transfer_status": "pending"|"in_transit"|"received"|"cancelled"
+            "app_role": "owner"|"staff","booking_source": "web"|"facebook"|"zalo"|"phone"|"walk_in","booking_status": "pending"|"confirmed"|"picked_up"|"returned"|"completed"|"cancelled","delivery_method": "pickup"|"ship","fitting_status": "booked"|"done"|"no_show"|"cancelled","item_status": "active"|"maintenance"|"retired","payment_kind": "payment"|"refund"|"security_hold"|"security_return","payment_method": "cash"|"bank"|"momo","product_status": "draft"|"active"|"archived","rental_unit": "day"|"hour","ship_zone": "local"|"province","transfer_status": "pending"|"in_transit"|"received"|"cancelled"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -695,7 +722,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "app_role": ["owner", "staff"],"booking_source": ["web", "facebook", "zalo", "phone", "walk_in"],"booking_status": ["pending", "confirmed", "picked_up", "returned", "completed", "cancelled"],"delivery_method": ["pickup", "ship"],"fitting_status": ["booked", "done", "no_show", "cancelled"],"item_status": ["active", "maintenance", "retired"],"payment_kind": ["payment", "refund", "security_hold", "security_return"],"payment_method": ["cash", "bank", "momo"],"product_status": ["draft", "active", "archived"],"ship_zone": ["local", "province"],"transfer_status": ["pending", "in_transit", "received", "cancelled"]
+            "app_role": ["owner", "staff"],"booking_source": ["web", "facebook", "zalo", "phone", "walk_in"],"booking_status": ["pending", "confirmed", "picked_up", "returned", "completed", "cancelled"],"delivery_method": ["pickup", "ship"],"fitting_status": ["booked", "done", "no_show", "cancelled"],"item_status": ["active", "maintenance", "retired"],"payment_kind": ["payment", "refund", "security_hold", "security_return"],"payment_method": ["cash", "bank", "momo"],"product_status": ["draft", "active", "archived"],"rental_unit": ["day", "hour"],"ship_zone": ["local", "province"],"transfer_status": ["pending", "in_transit", "received", "cancelled"]
           }
         }
 } as const

@@ -7,7 +7,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(39);
+select plan(43);
 
 update public.settings
 set cleaning_days = 1, transfer_days = 1, ship_days_local = 1, ship_days_province = 3, hold_hours = 24;
@@ -306,6 +306,45 @@ select throws_like(
 );
 
 -- ---------------------------------------------------------------------------
+-- Đổi váy trong đơn đã cọc
+-- ---------------------------------------------------------------------------
+
+select lives_ok(
+  $$ select public.add_booking_item(
+       (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006'),
+       'e5000000-0000-4000-8000-000000000001', 'M') $$,
+  'thêm váy vào đơn đã cọc'
+);
+
+select results_eq(
+  $$ select b.deposit_required, (select count(*) from public.transfers t where t.booking_id = b.id and t.status = 'pending')
+     from public.bookings b join public.customers c on c.id = b.customer_id
+     where c.phone = '0912000006' $$,
+  $$ values (200000::bigint, 2::bigint) $$,
+  'thêm váy → cộng cọc, tạo phiếu chuyển cho váy mới'
+);
+
+select lives_ok(
+  $$ select public.remove_booking_item(
+       (select bi.id from public.booking_items bi
+        join public.inventory_items i on i.id = bi.item_id
+        join public.bookings b on b.id = bi.booking_id
+        join public.customers c on c.id = b.customer_id
+        where c.phone = '0912000006' and i.code = 'TST-M-1')) $$,
+  'bỏ váy vừa thêm'
+);
+
+select throws_like(
+  $$ select public.remove_booking_item(
+       (select bi.id from public.booking_items bi
+        join public.bookings b on b.id = bi.booking_id
+        join public.customers c on c.id = b.customer_id
+        where c.phone = '0912000006')) $$,
+  '%ít nhất 1 váy%',
+  'không bỏ được váy cuối cùng'
+);
+
+-- ---------------------------------------------------------------------------
 -- Phân quyền
 -- ---------------------------------------------------------------------------
 
@@ -315,7 +354,7 @@ set local role authenticated;
 
 select throws_like(
   $$ update public.transfers set status = 'in_transit'
-     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') $$,
+     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') and status = 'pending' $$,
   '%Chỉ cơ sở gửi%',
   'cơ sở nhận không bấm "đã gửi" thay cơ sở gửi'
 );
@@ -350,7 +389,7 @@ select set_config('request.jwt.claims', '{"role": "authenticated", "sub": "e9000
 
 select lives_ok(
   $$ update public.transfers set status = 'in_transit'
-     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') $$,
+     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') and status = 'pending' $$,
   'cơ sở gửi xác nhận đã gửi'
 );
 
@@ -358,7 +397,7 @@ select set_config('request.jwt.claims', '{"role": "authenticated", "sub": "e9000
 
 select lives_ok(
   $$ update public.transfers set status = 'received'
-     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') $$,
+     where booking_id = (select b.id from public.bookings b join public.customers c on c.id = b.customer_id where c.phone = '0912000006') and status = 'in_transit' $$,
   'cơ sở nhận xác nhận đã nhận'
 );
 

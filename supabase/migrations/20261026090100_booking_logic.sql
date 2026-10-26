@@ -233,6 +233,24 @@ begin
 end;
 $$;
 
+-- Cọc giữ chỗ và thế chấp của đơn = tổng theo các mẫu váy trong đơn
+create function private.refresh_booking_deposits(p_booking_id uuid)
+returns void
+language sql
+set search_path = ''
+as $$
+  update public.bookings b
+  set deposit_required = x.deposit, security_deposit = x.security
+  from (
+    select coalesce(sum(p.deposit_amount), 0) as deposit, coalesce(sum(p.security_amount), 0) as security
+    from public.booking_items bi
+    join public.inventory_items i on i.id = bi.item_id
+    join public.products p on p.id = i.product_id
+    where bi.booking_id = p_booking_id
+  ) x
+  where b.id = p_booking_id
+$$;
+
 -- ---------------------------------------------------------------------------
 -- Trigger: booking_items
 -- ---------------------------------------------------------------------------
@@ -750,23 +768,119 @@ begin
     end if;
   end loop;
 
-  update public.bookings b
-  set deposit_required = x.deposit, security_deposit = x.security
-  from (
-    select sum(p.deposit_amount) as deposit, sum(p.security_amount) as security
-    from public.booking_items bi
-    join public.inventory_items i on i.id = bi.item_id
-    join public.products p on p.id = i.product_id
-    where bi.booking_id = v_booking.id
-  ) x
-  where b.id = v_booking.id
-  returning b.* into v_booking;
+  perform private.refresh_booking_deposits(v_booking.id);
 
+  select * into v_booking from public.bookings where id = v_booking.id;
   return v_booking;
 end;
 $$;
 
 revoke execute on function public.create_booking from public, anon;
+
+-- ---------------------------------------------------------------------------
+-- RPC: đổi váy trong đơn chưa giao (thêm theo mẫu + size, bỏ 1 chiếc)
+-- ---------------------------------------------------------------------------
+
+create function public.add_booking_item(p_booking_id uuid, p_product_id uuid, p_size text)
+returns public.booking_items
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  b public.bookings;
+  v_product public.products;
+  v_item_id uuid;
+  v_row public.booking_items;
+  v_attempts int := 0;
+  s public.settings;
+begin
+  select * into b from public.bookings where id = p_booking_id;
+  if b.id is null then
+    raise exception 'Không tìm thấy đơn' using hint = 'booking_not_found';
+  end if;
+  if private.jwt_role() is not null and not private.can_manage_branch(b.branch_id) then
+    raise exception 'Bạn không có quyền sửa đơn ở cơ sở này' using errcode = '42501';
+  end if;
+  if b.status not in ('pending', 'confirmed') then
+    raise exception 'Chỉ đổi váy được khi khách chưa nhận váy' using hint = 'booking_locked';
+  end if;
+
+  select * into v_product from public.products where id = p_product_id;
+  if v_product.id is null then
+    raise exception 'Không tìm thấy mẫu váy' using hint = 'product_not_found';
+  end if;
+
+  loop
+    v_attempts := v_attempts + 1;
+    v_item_id := private.find_free_item(
+      p_product_id, p_size, b.branch_id, b.pickup_date, b.return_date, b.delivery_method, b.ship_zone
+    );
+    if v_item_id is null or v_attempts > 5 then
+      raise exception '% (size %) đã kín lịch trong khoảng ngày này', v_product.name, p_size
+        using hint = 'item_unavailable';
+    end if;
+
+    begin
+      insert into public.booking_items (booking_id, item_id) values (b.id, v_item_id)
+      returning * into v_row;
+      exit;
+    exception when exclusion_violation then
+      null;
+    end;
+  end loop;
+
+  -- Đơn đã cọc: váy ở kho gốc khác cần phiếu chuyển ngay
+  if b.status = 'confirmed' then
+    select * into s from public.settings;
+    insert into public.transfers (item_id, booking_id, from_branch_id, to_branch_id, due_date)
+    select v_row.item_id, b.id, i.home_branch_id, b.branch_id, lower(v_row.blocked_period) + s.transfer_days
+    from public.inventory_items i
+    where i.id = v_row.item_id and i.home_branch_id <> b.branch_id;
+  end if;
+
+  perform private.refresh_booking_deposits(b.id);
+  return v_row;
+end;
+$$;
+
+revoke execute on function public.add_booking_item from public, anon;
+
+create function public.remove_booking_item(p_booking_item_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  bi public.booking_items;
+  b public.bookings;
+begin
+  select * into bi from public.booking_items where id = p_booking_item_id;
+  select * into b from public.bookings where id = bi.booking_id;
+  if b.id is null then
+    raise exception 'Không tìm thấy váy trong đơn' using hint = 'booking_not_found';
+  end if;
+  if private.jwt_role() is not null and not private.can_manage_branch(b.branch_id) then
+    raise exception 'Bạn không có quyền sửa đơn ở cơ sở này' using errcode = '42501';
+  end if;
+  if b.status not in ('pending', 'confirmed') then
+    raise exception 'Chỉ đổi váy được khi khách chưa nhận váy' using hint = 'booking_locked';
+  end if;
+  if (select count(*) from public.booking_items where booking_id = b.id) <= 1 then
+    raise exception 'Đơn phải còn ít nhất 1 váy. Muốn bỏ hết thì hủy đơn.' using hint = 'last_item';
+  end if;
+
+  delete from public.booking_items where id = bi.id;
+
+  update public.transfers set status = 'cancelled'
+  where booking_id = b.id and item_id = bi.item_id and status = 'pending';
+
+  perform private.refresh_booking_deposits(b.id);
+end;
+$$;
+
+revoke execute on function public.remove_booking_item from public, anon;
 
 -- ---------------------------------------------------------------------------
 -- RPC công khai cho trang khách
